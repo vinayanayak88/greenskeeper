@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+# Postgres
+spring:
+  datasource:
+    platform: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/greenskeeper}
+    username: ${DB_USER:greenskeeper}
+    password: ${DB_PASS:greenskeeper}
+    driverClassName: org.postgresql.Driver
+
+graphql:
+  spqr:
+    gui:
+      enabled: true
+    relay:
+      connection-check-relaxed: true
+

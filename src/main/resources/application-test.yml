@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+# Postgres
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+    ddl-auto: none
+
+  datasource:
+    platform: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/greenskeeper}
+    username: ${DB_USER:greenskeeper}
+    password: ${DB_PASS:greenskeeper}
+    driverClassName: org.postgresql.Driver
