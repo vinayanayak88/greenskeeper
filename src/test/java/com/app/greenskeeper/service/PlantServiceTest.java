@@ -63,7 +63,7 @@ public class PlantServiceTest {
         UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"));
     assertThat(plant.getCategory().getTitle()).isEqualTo("Foliage Plant");
     assertThat(plant.getCategory().getDuration()).isEqualTo(WateringDuration.WEEKLY);
-    assertThat(plant.getCategory().getFrequency()).isEqualTo("2");
+    assertThat(plant.getCategory().getWateringPeriod()).isEqualTo("2");
     assertThat(plant.getCategory().getLightRequirement()).isEqualTo(LightRequirement.INDIRECTLIGHT);
   }
 
@@ -83,7 +83,7 @@ public class PlantServiceTest {
                                                     .id(UUID.randomUUID())
                                                     .name("Trailing Plant")
                                                     .duration(WateringDuration.WEEKLY)
-                                                    .frequency(2)
+                                                    .wateringPeriod(2)
                                                     .lightRequirement(
                                                         LightRequirement.INDIRECTLIGHT)
                                                     .build();
@@ -97,7 +97,7 @@ public class PlantServiceTest {
                                                 .id(UUID.randomUUID())
                                                 .name("Palm Plant")
                                                 .duration(WateringDuration.MONTHLY)
-                                                .frequency(4)
+                                                .wateringPeriod(4)
                                                 .lightRequirement(LightRequirement.INDIRECTLIGHT)
                                                 .build();
 
@@ -116,7 +116,7 @@ public class PlantServiceTest {
     assertThat(availablePlants.get(0).getCategory().getTitle()).isEqualTo("Trailing Plant");
     assertThat(availablePlants.get(0).getCategory().getDuration())
         .isEqualTo(WateringDuration.WEEKLY);
-    assertThat(availablePlants.get(0).getCategory().getFrequency()).isEqualTo("2");
+    assertThat(availablePlants.get(0).getCategory().getWateringPeriod()).isEqualTo("2");
     assertThat(availablePlants.get(0).getCategory().getLightRequirement())
         .isEqualTo(LightRequirement.INDIRECTLIGHT);
 
@@ -124,7 +124,7 @@ public class PlantServiceTest {
     assertThat(availablePlants.get(1).getCategory().getTitle()).isEqualTo("Palm Plant");
     assertThat(availablePlants.get(1).getCategory().getDuration())
         .isEqualTo(WateringDuration.MONTHLY);
-    assertThat(availablePlants.get(1).getCategory().getFrequency()).isEqualTo("4");
+    assertThat(availablePlants.get(1).getCategory().getWateringPeriod()).isEqualTo("4");
     assertThat(availablePlants.get(1).getCategory().getLightRequirement())
         .isEqualTo(LightRequirement.INDIRECTLIGHT);
   }
@@ -141,7 +141,7 @@ public class PlantServiceTest {
                    .id(UUID.fromString("baa46f55-3a2a-4d33-80e9-9b3dc1a88ad8"))
                    .title("Foliage Plant")
                    .duration(WateringDuration.WEEKLY)
-                   .frequency("2")
+                   .wateringPeriod("2")
                    .lightRequirement(LightRequirement.INDIRECTLIGHT)
                    .build();
   }
@@ -159,7 +159,7 @@ public class PlantServiceTest {
                          .id(UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"))
                          .name("Foliage Plant")
                          .duration(WateringDuration.WEEKLY)
-                         .frequency(2)
+                         .wateringPeriod(2)
                          .lightRequirement(LightRequirement.INDIRECTLIGHT).build();
   }
 }

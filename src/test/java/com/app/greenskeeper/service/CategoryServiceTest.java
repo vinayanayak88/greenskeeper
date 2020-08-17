@@ -38,7 +38,7 @@ public class CategoryServiceTest {
                                                    .id(UUID.randomUUID())
                                                    .name("Foliage Plant")
                                                    .duration(WateringDuration.WEEKLY)
-                                                   .frequency(2)
+                                                   .wateringPeriod(2)
                                                    .lightRequirement(LightRequirement.INDIRECTLIGHT)
                                                    .build();
 
@@ -46,7 +46,7 @@ public class CategoryServiceTest {
                                                  .id(UUID.randomUUID())
                                                  .name("Cacti Plant")
                                                  .duration(WateringDuration.MONTHLY)
-                                                 .frequency(2)
+                                                 .wateringPeriod(2)
                                                  .lightRequirement(LightRequirement.LOWLIGHT)
                                                  .build();
 
@@ -62,8 +62,8 @@ public class CategoryServiceTest {
     assertThat(categories.get(0).getTitle()).isEqualTo(foliageCategory.getName());
     assertThat(categories.get(0).getDuration())
         .isEqualTo(foliageCategory.getDuration());
-    assertThat(categories.get(0).getFrequency())
-        .isEqualTo(String.valueOf(foliageCategory.getFrequency()));
+    assertThat(categories.get(0).getWateringPeriod())
+        .isEqualTo(String.valueOf(foliageCategory.getWateringPeriod()));
     assertThat(categories.get(0).getLightRequirement())
         .isEqualTo(LightRequirement.INDIRECTLIGHT);
 
@@ -71,8 +71,8 @@ public class CategoryServiceTest {
     assertThat(categories.get(1).getTitle()).isEqualTo(cactiCategory.getName());
     assertThat(categories.get(1).getDuration())
         .isEqualTo(cactiCategory.getDuration());
-    assertThat(categories.get(1).getFrequency())
-        .isEqualTo(String.valueOf(cactiCategory.getFrequency()));
+    assertThat(categories.get(1).getWateringPeriod())
+        .isEqualTo(String.valueOf(cactiCategory.getWateringPeriod()));
     assertThat(categories.get(1).getLightRequirement())
         .isEqualTo(LightRequirement.LOWLIGHT);
 
@@ -93,7 +93,7 @@ public class CategoryServiceTest {
     Category category = Category.builder()
                                 .title("Cacti Plant")
                                 .duration(WateringDuration.MONTHLY)
-                                .frequency("2")
+                                .wateringPeriod("2")
                                 .lightRequirement(LightRequirement.LOWLIGHT)
                                 .build();
     category = categoryService.createCategory(category);
@@ -105,7 +105,7 @@ public class CategoryServiceTest {
     Category category = Category.builder()
                                 .title("Cacti Plant")
                                 .duration(WateringDuration.MONTHLY)
-                                .frequency("2")
+                                .wateringPeriod("2")
                                 .lightRequirement(LightRequirement.LOWLIGHT)
                                 .build();
     given(categoryRepository.findByName("Cacti Plant"))
@@ -121,7 +121,7 @@ public class CategoryServiceTest {
     return Category.builder()
                    .title("Cacti Plant")
                    .duration(WateringDuration.MONTHLY)
-                   .frequency(String.valueOf("2"))
+                   .wateringPeriod(String.valueOf("2"))
                    .lightRequirement(LightRequirement.LOWLIGHT)
                    .build();
   }
@@ -130,7 +130,7 @@ public class CategoryServiceTest {
     return CategoryEntity.builder()
                          .name(category.getTitle())
                          .duration(category.getDuration())
-                         .frequency(Integer.valueOf(category.getFrequency()))
+                         .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
                          .lightRequirement(category.getLightRequirement())
                          .build();
   }

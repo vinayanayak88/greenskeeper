@@ -43,8 +43,8 @@ public class CategoryEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @NonNull
     private WateringDuration duration;
-    @Column(name = "frequency")
-    private Integer frequency;
+    @Column(name = "watering_period")
+    private Integer wateringPeriod;
     @Column(name = "light_requirement")
     @Enumerated(EnumType.STRING)
     @NonNull

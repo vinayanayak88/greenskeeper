@@ -49,7 +49,7 @@ public class CategoryService {
                    .id(categoryEntity.getId())
                    .title(categoryEntity.getName())
                    .duration(categoryEntity.getDuration())
-                   .frequency(String.valueOf(categoryEntity.getFrequency()))
+                   .wateringPeriod(String.valueOf(categoryEntity.getWateringPeriod()))
                    .lightRequirement(categoryEntity.getLightRequirement())
                    .build();
   }
@@ -59,7 +59,7 @@ public class CategoryService {
     return CategoryEntity.builder()
                          .name(category.getTitle())
                          .duration(category.getDuration())
-                         .frequency(Integer.valueOf(category.getFrequency()))
+                         .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
                          .lightRequirement(category.getLightRequirement())
                          .build();
   }

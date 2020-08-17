@@ -31,7 +31,7 @@ public class PlantService {
   public Plant addPlant(@GraphQLArgument(name = "plant") Plant plant) {
     if (plantRepository.findByName(plant.getName()).isPresent()) {
       throw new PlantAlreadyExistsException(
-          "Similar plant already exists.Please choose a new name");
+          "Plant with the similar name already exists.Please choose another name");
     }
     PlantEntity plantEntity = buildPlantEntity(plant);
     plantRepository.save(plantEntity);
@@ -64,7 +64,7 @@ public class PlantService {
     return CategoryEntity.builder()
                          .name(category.getTitle())
                          .duration(category.getDuration())
-                         .frequency(Integer.valueOf(category.getFrequency()))
+                         .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
                          .lightRequirement(category.getLightRequirement())
                          .build();
   }
@@ -82,7 +82,7 @@ public class PlantService {
                    .id(categoryEntity.getId())
                    .title(categoryEntity.getName())
                    .duration(categoryEntity.getDuration())
-                   .frequency(String.valueOf(categoryEntity.getFrequency()))
+                   .wateringPeriod(String.valueOf(categoryEntity.getWateringPeriod()))
                    .lightRequirement(categoryEntity.getLightRequirement())
                    .build();
   }
