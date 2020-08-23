@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import com.app.greenskeeper.domain.Category;
 import com.app.greenskeeper.domain.LightRequirement;
 import com.app.greenskeeper.domain.WateringDuration;
-import com.app.greenskeeper.entity.CategoryEntity;
+import com.app.greenskeeper.entity.CategoryDetails;
 import com.app.greenskeeper.exception.CategoryAlreadyExistsException;
 import com.app.greenskeeper.repository.CategoryRepository;
 import java.util.Arrays;
@@ -34,23 +34,23 @@ public class CategoryServiceTest {
 
   @Test
   public void testGetAllCategory() {
-    CategoryEntity foliageCategory = CategoryEntity.builder()
+    CategoryDetails foliageCategory = CategoryDetails.builder()
+                                                     .id(UUID.randomUUID())
+                                                     .name("Foliage Plant")
+                                                     .duration(WateringDuration.WEEKLY)
+                                                     .wateringPeriod(2)
+                                                     .lightRequirement(LightRequirement.INDIRECTLIGHT)
+                                                     .build();
+
+    CategoryDetails cactiCategory = CategoryDetails.builder()
                                                    .id(UUID.randomUUID())
-                                                   .name("Foliage Plant")
-                                                   .duration(WateringDuration.WEEKLY)
+                                                   .name("Cacti Plant")
+                                                   .duration(WateringDuration.MONTHLY)
                                                    .wateringPeriod(2)
-                                                   .lightRequirement(LightRequirement.INDIRECTLIGHT)
+                                                   .lightRequirement(LightRequirement.LOWLIGHT)
                                                    .build();
 
-    CategoryEntity cactiCategory = CategoryEntity.builder()
-                                                 .id(UUID.randomUUID())
-                                                 .name("Cacti Plant")
-                                                 .duration(WateringDuration.MONTHLY)
-                                                 .wateringPeriod(2)
-                                                 .lightRequirement(LightRequirement.LOWLIGHT)
-                                                 .build();
-
-    List<CategoryEntity> categoryEntities = Arrays.asList(foliageCategory, cactiCategory);
+    List<CategoryDetails> categoryEntities = Arrays.asList(foliageCategory, cactiCategory);
 
     given(categoryRepository.findAll()).willReturn(categoryEntities);
 
@@ -126,13 +126,13 @@ public class CategoryServiceTest {
                    .build();
   }
 
-  private CategoryEntity buildCategoryEntity(Category category) {
-    return CategoryEntity.builder()
-                         .name(category.getTitle())
-                         .duration(category.getDuration())
-                         .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
-                         .lightRequirement(category.getLightRequirement())
-                         .build();
+  private CategoryDetails buildCategoryEntity(Category category) {
+    return CategoryDetails.builder()
+                          .name(category.getTitle())
+                          .duration(category.getDuration())
+                          .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
+                          .lightRequirement(category.getLightRequirement())
+                          .build();
   }
 
 }

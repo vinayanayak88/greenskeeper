@@ -4,10 +4,12 @@ import com.app.greenskeeper.domain.LightRequirement;
 import com.app.greenskeeper.domain.WateringDuration;
 import io.leangen.graphql.annotations.types.GraphQLType;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -21,8 +23,8 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
-@Entity
-@Table(name = "category")
+@Entity(name = "CategoryDetails")
+@Table(name = "category_details")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
@@ -30,7 +32,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @Builder
 @GraphQLType
-public class CategoryEntity extends BaseEntity {
+public class CategoryDetails extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -49,7 +51,4 @@ public class CategoryEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @NonNull
     private LightRequirement lightRequirement;
-    @OneToOne(mappedBy = "category")
-    private PlantEntity plant;
-
 }

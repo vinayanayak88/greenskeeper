@@ -1,6 +1,6 @@
 package com.app.greenskeeper.repository;
 
-import com.app.greenskeeper.entity.PlantEntity;
+import com.app.greenskeeper.entity.PlantDetails;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,11 +8,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PlantRepository extends CrudRepository<PlantEntity, UUID> {
+public interface PlantRepository extends CrudRepository<PlantDetails, UUID> {
 
-  Optional<PlantEntity> findByName(String name);
+  Optional<PlantDetails> findByName(String name);
 
   @Override
-  List<PlantEntity> findAll();
+  List<PlantDetails> findAll();
 
 }

@@ -1,7 +1,7 @@
 package com.app.greenskeeper.service;
 
 import com.app.greenskeeper.domain.Category;
-import com.app.greenskeeper.entity.CategoryEntity;
+import com.app.greenskeeper.entity.CategoryDetails;
 import com.app.greenskeeper.exception.CategoryAlreadyExistsException;
 import com.app.greenskeeper.repository.CategoryRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -24,7 +24,7 @@ public class CategoryService {
 
   @GraphQLQuery
   public List<Category> getAllCategory() {
-    List<CategoryEntity> categoryEntities = categoryRepository.findAll();
+    List<CategoryDetails> categoryEntities = categoryRepository.findAll();
     return buildCatergoriesResponse(categoryEntities);
   }
 
@@ -35,16 +35,16 @@ public class CategoryService {
       throw new CategoryAlreadyExistsException(
           "Category already exists.Please try with another one");
     }
-    CategoryEntity categoryEntity = buildCategoryEntity(category);
+    CategoryDetails categoryEntity = buildCategoryEntity(category);
     categoryRepository.save(categoryEntity);
     return buildCategoryResponse(categoryEntity);
   }
 
-  private List<Category> buildCatergoriesResponse(List<CategoryEntity> categoryEntities) {
+  private List<Category> buildCatergoriesResponse(List<CategoryDetails> categoryEntities) {
     return categoryEntities.stream().map(this::buildCategoryResponse).collect(Collectors.toList());
   }
 
-  private Category buildCategoryResponse(CategoryEntity categoryEntity) {
+  private Category buildCategoryResponse(CategoryDetails categoryEntity) {
     return Category.builder()
                    .id(categoryEntity.getId())
                    .title(categoryEntity.getName())
@@ -55,13 +55,13 @@ public class CategoryService {
   }
 
 
-  private CategoryEntity buildCategoryEntity(Category category) {
-    return CategoryEntity.builder()
-                         .name(category.getTitle())
-                         .duration(category.getDuration())
-                         .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
-                         .lightRequirement(category.getLightRequirement())
-                         .build();
+  private CategoryDetails buildCategoryEntity(Category category) {
+    return CategoryDetails.builder()
+                          .name(category.getTitle())
+                          .duration(category.getDuration())
+                          .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
+                          .lightRequirement(category.getLightRequirement())
+                          .build();
   }
 
 }

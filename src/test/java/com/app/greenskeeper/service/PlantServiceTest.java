@@ -10,8 +10,8 @@ import com.app.greenskeeper.domain.Category;
 import com.app.greenskeeper.domain.LightRequirement;
 import com.app.greenskeeper.domain.Plant;
 import com.app.greenskeeper.domain.WateringDuration;
-import com.app.greenskeeper.entity.CategoryEntity;
-import com.app.greenskeeper.entity.PlantEntity;
+import com.app.greenskeeper.entity.CategoryDetails;
+import com.app.greenskeeper.entity.PlantDetails;
 import com.app.greenskeeper.exception.PlantAlreadyExistsException;
 import com.app.greenskeeper.exception.PlantNotFoundException;
 import com.app.greenskeeper.repository.PlantRepository;
@@ -39,22 +39,35 @@ public class PlantServiceTest {
                        .name("Peace Lilly")
                        .category(buildPlantCategory())
                        .build();
+    given(plantRepository.findByName(plant.getName())).willReturn(Optional.empty());
     plantService.addPlant(plant);
-    verify(plantRepository, times(1)).save(buildPlantEntity());
+    PlantDetails plantDetails = PlantDetails.builder()
+                                            .name("Peace Lilly")
+                                            .categoryDetails(CategoryDetails.builder()
+                                                                            .name("Foliage Plant")
+                                                                            .duration(
+                                                                                WateringDuration.WEEKLY)
+                                                                            .wateringPeriod(2)
+                                                                            .lightRequirement(
+                                                                                LightRequirement.INDIRECTLIGHT)
+                                                                            .build())
+                                            .build();
+    verify(plantRepository, times(1)).save(plantDetails);
   }
 
   @Test
   public void testAddPlant_whenPlatNameAlreadyExists() {
-    given(plantRepository.findByName("Peace Lilly")).willReturn(Optional.of(buildPlantEntity()));
+    given(plantRepository.findByName("Peace Lilly")).willReturn(Optional.of(buildPlantDetails()));
     assertThatThrownBy(() -> plantService.addPlant(buildPlant()))
         .isInstanceOf(PlantAlreadyExistsException.class)
-        .hasMessageContaining("Similar plant already exists.Please choose a new name");
+        .hasMessageContaining(
+            "Plant with the similar name already exists.Please choose another name");
   }
 
   @Test
   public void testGetPlant() {
     UUID plantId = UUID.fromString("aaa46f55-3a2a-4d33-80e9-9b3dc1a88ad7");
-    given(plantRepository.findById(plantId)).willReturn(Optional.of(buildPlantEntity()));
+    given(plantRepository.findById(plantId)).willReturn(Optional.of(buildPlantDetails()));
     Plant plant = plantService.getPlant(plantId);
 
     assertThat(plant.getId()).isNotNull();
@@ -79,34 +92,34 @@ public class PlantServiceTest {
 
   @Test
   public void testGetAllPlants() {
-    CategoryEntity trailingCategory = CategoryEntity.builder()
-                                                    .id(UUID.randomUUID())
-                                                    .name("Trailing Plant")
-                                                    .duration(WateringDuration.WEEKLY)
-                                                    .wateringPeriod(2)
-                                                    .lightRequirement(
-                                                        LightRequirement.INDIRECTLIGHT)
-                                                    .build();
+    CategoryDetails trailingCategory = CategoryDetails.builder()
+                                                      .id(UUID.randomUUID())
+                                                      .name("Trailing Plant")
+                                                      .duration(WateringDuration.WEEKLY)
+                                                      .wateringPeriod(2)
+                                                      .lightRequirement(
+                                                          LightRequirement.INDIRECTLIGHT)
+                                                      .build();
 
-    PlantEntity pothos = PlantEntity.builder()
-                                    .name("Pothos")
-                                    .category(trailingCategory)
-                                    .build();
+    PlantDetails pothos = PlantDetails.builder()
+                                      .name("Pothos")
+                                      .categoryDetails(trailingCategory)
+                                      .build();
 
-    CategoryEntity plamCategory = CategoryEntity.builder()
-                                                .id(UUID.randomUUID())
-                                                .name("Palm Plant")
-                                                .duration(WateringDuration.MONTHLY)
-                                                .wateringPeriod(4)
-                                                .lightRequirement(LightRequirement.INDIRECTLIGHT)
-                                                .build();
+    CategoryDetails palmCategory = CategoryDetails.builder()
+                                                  .id(UUID.randomUUID())
+                                                  .name("Palm Plant")
+                                                  .duration(WateringDuration.MONTHLY)
+                                                  .wateringPeriod(4)
+                                                  .lightRequirement(LightRequirement.INDIRECTLIGHT)
+                                                  .build();
 
-    PlantEntity arecaPalm = PlantEntity.builder()
-                                       .name("Areca Palm")
-                                       .category(plamCategory)
-                                       .build();
+    PlantDetails arecaPalm = PlantDetails.builder()
+                                         .name("Areca Palm")
+                                         .categoryDetails(palmCategory)
+                                         .build();
 
-    List<PlantEntity> plantEntities = Arrays.asList(pothos, arecaPalm);
+    List<PlantDetails> plantEntities = Arrays.asList(pothos, arecaPalm);
 
     given(plantRepository.findAll()).willReturn(plantEntities);
 
@@ -146,20 +159,21 @@ public class PlantServiceTest {
                    .build();
   }
 
-  private PlantEntity buildPlantEntity() {
-    return PlantEntity.builder()
-                      .id(UUID.fromString("aaa46f55-3a2a-4d33-80e9-9b3dc1a88ad7"))
-                      .name("Peace Lilly")
-                      .category(buildCategoryEntity())
-                      .build();
+  private PlantDetails buildPlantDetails() {
+    return PlantDetails.builder()
+                       .id(UUID.fromString("aaa46f55-3a2a-4d33-80e9-9b3dc1a88ad7"))
+                       .name("Peace Lilly")
+                       .categoryDetails(buildCategoryDetails())
+                       .build();
   }
 
-  private CategoryEntity buildCategoryEntity() {
-    return CategoryEntity.builder()
-                         .id(UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"))
-                         .name("Foliage Plant")
-                         .duration(WateringDuration.WEEKLY)
-                         .wateringPeriod(2)
-                         .lightRequirement(LightRequirement.INDIRECTLIGHT).build();
+  private CategoryDetails buildCategoryDetails() {
+    return CategoryDetails.builder()
+                          .id(UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"))
+                          .name("Foliage Plant")
+                          .duration(WateringDuration.WEEKLY)
+                          .wateringPeriod(2)
+                          .lightRequirement(LightRequirement.INDIRECTLIGHT).build();
   }
+
 }

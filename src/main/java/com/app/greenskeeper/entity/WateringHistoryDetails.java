@@ -4,6 +4,7 @@ import io.leangen.graphql.annotations.types.GraphQLType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,8 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
-@Entity
-@Table(name = "watering_history")
+@Entity(name = "WateringHistoryDetails")
+@Table(name = "watering_history_details")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
@@ -27,15 +28,16 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @Builder
 @GraphQLType
-public class WateringHistoryEntity extends BaseEntity {
+public class WateringHistoryDetails extends BaseEntity {
 
   @Id
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private UUID id;
   @Basic
+  @Column(name = "watering_time")
   private LocalDateTime wateringTime;
   @ManyToOne
-  @JoinColumn(name = "watering_id", insertable = false, updatable = false)
-  private WateringEntity wateringEntity;
+  @JoinColumn(name = "watering_details_id")
+  private WateringDetails wateringDetails;
 }

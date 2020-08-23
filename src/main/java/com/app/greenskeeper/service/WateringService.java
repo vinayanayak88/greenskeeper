@@ -1,12 +1,12 @@
 package com.app.greenskeeper.service;
 
 import com.app.greenskeeper.domain.Watering;
-import com.app.greenskeeper.entity.PlantEntity;
-import com.app.greenskeeper.entity.WateringEntity;
+import com.app.greenskeeper.entity.PlantDetails;
+import com.app.greenskeeper.entity.WateringDetails;
 import com.app.greenskeeper.exception.PlantNotFoundException;
 import com.app.greenskeeper.repository.PlantRepository;
 import com.app.greenskeeper.repository.WateringRepository;
-import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,45 +25,48 @@ public class WateringService {
   @NonNull
   private PlantRepository plantRepository;
 
-  @GraphQLQuery(name = "waterPlant")
-  public void waterNow(UUID plantId) {
-    PlantEntity plant = plantRepository.findById(plantId).orElseThrow(
+  @GraphQLMutation(name = "waterPlant")
+  public Watering waterNow(UUID plantId) {
+    PlantDetails plantDetails = plantRepository.findById(plantId).orElseThrow(
         () -> new PlantNotFoundException(
             "I'm sorry, I couldn't find the plant. You probably might have moved me to the graveyard :( "));
-    Optional<WateringEntity> wateringEntity = wateringRepository.findByPlantId(plant.getId());
-    wateringEntity.ifPresent(entity -> updateWateringCondition(plant, entity));
-    createWateringCondition(plant);
+    //Optional<WateringDetails> wateringDetails = wateringRepository.findByPlantId(plantDetails.getId());
+    if(plantDetails.getWateringDetails() != null){
+      updateWateringCondition(plantDetails);
+    }
+    return createWateringCondition(plantDetails);
+//    return wateringDetails.map(details -> updateWateringCondition(plantDetails, details))
+//                         .orElseGet(() -> createWateringCondition(plantDetails));
   }
 
-  private void updateWateringCondition(PlantEntity plant,
-                                       WateringEntity wateringEntity) {
-    wateringEntity.setLastWateredOn(LocalDateTime.now());
-    wateringEntity
-        .setNextWateringDay(calculateNextWateringDay(plant, wateringEntity.getLastWateredOn()));
-    wateringRepository.save(wateringEntity);
+  private Watering updateWateringCondition(PlantDetails plantDetails) {
+    plantDetails.getWateringDetails().setLastWateredOn(LocalDateTime.now());
+    plantDetails.getWateringDetails()
+        .setNextWateringDay(calculateNextWateringDay(plantDetails,
+                                                     plantDetails.getWateringDetails().getLastWateredOn()));
+    wateringRepository.save(plantDetails.getWateringDetails());
+    return buildWateringResponse(plantDetails.getWateringDetails());
   }
 
-  private void createWateringCondition(PlantEntity plant) {
-    WateringEntity wateringEntity = WateringEntity.builder()
-                                                  .plantId(plant.getId())
-                                                  .lastWateredOn(LocalDateTime.now())
-                                                  .nextWateringDay(LocalDateTime.now().plusDays(
-                                                      plant.getCategory().getWateringPeriod()))
-                                                  .build();
-    wateringRepository.save(wateringEntity);
-    //return buildWateringResponse(wateringEntity);
+  private Watering createWateringCondition(PlantDetails plant) {
+    WateringDetails wateringDetails = WateringDetails.builder()
+                                                    .lastWateredOn(LocalDateTime.now())
+                                                    .nextWateringDay(LocalDateTime.now().plusDays(
+                                                      plant.getCategoryDetails().getWateringPeriod()))
+                                                    .build();
+    wateringRepository.save(wateringDetails);
+    return buildWateringResponse(wateringDetails);
   }
 
-  private LocalDateTime calculateNextWateringDay(PlantEntity plant, LocalDateTime lastWateredOn) {
-    return lastWateredOn.plusDays(plant.getCategory().getWateringPeriod());
+  private LocalDateTime calculateNextWateringDay(PlantDetails plant, LocalDateTime lastWateredOn) {
+    return lastWateredOn.plusDays(plant.getCategoryDetails().getWateringPeriod());
   }
 
-  private Watering buildWateringResponse(WateringEntity wateringEntity){
+  private Watering buildWateringResponse(WateringDetails wateringDetails){
     return Watering.builder()
-            .id(wateringEntity.getId())
-            .plantId(wateringEntity.getPlantId())
-            .lastWateredOn(wateringEntity.getLastWateredOn())
-            .nextWateringDay(wateringEntity.getNextWateringDay())
+            .id(wateringDetails.getId())
+            .lastWateredOn(wateringDetails.getLastWateredOn())
+            .nextWateringDay(wateringDetails.getNextWateringDay())
             .build();
   }
 }

@@ -7,13 +7,13 @@ import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.app.greenskeeper.entity.CategoryEntity;
+import com.app.greenskeeper.entity.CategoryDetails;
 
 @Repository
-public interface CategoryRepository extends CrudRepository<CategoryEntity, UUID> {
+public interface CategoryRepository extends CrudRepository<CategoryDetails, UUID> {
 
   @Override
-  List<CategoryEntity> findAll();
+  List<CategoryDetails> findAll();
 
-  Optional<CategoryEntity> findByName(String name);
+  Optional<CategoryDetails> findByName(String name);
 }

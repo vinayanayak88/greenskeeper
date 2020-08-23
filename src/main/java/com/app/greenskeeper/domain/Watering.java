@@ -19,7 +19,7 @@ import lombok.ToString;
 public class Watering {
 
   private UUID id;
-  private UUID plantId;
+  //private UUID plantId;
   private LocalDateTime lastWateredOn;
   private LocalDateTime nextWateringDay;
   private List<WateringHistory> wateringHistories;
