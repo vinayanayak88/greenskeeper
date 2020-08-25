@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -38,5 +39,6 @@ public class WateringHistoryDetails extends BaseEntity {
   @Column(name = "watering_time")
   private LocalDateTime wateringTime;
   @ManyToOne(fetch = FetchType.LAZY)
-  private PlantDetails plantDetails;
+  @JoinColumn(name = "plant_id", referencedColumnName = "id")
+  private PlantDetails wateringHistoryPlantDetails;
 }

@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -45,10 +44,8 @@ public class PlantDetails extends BaseEntity {
   private String category;
   @Column(name = "watering_interval")
   private Integer wateringInterval;
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "watering_details_id", referencedColumnName = "id")
+  @OneToOne(mappedBy = "plantDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private WateringDetails wateringDetails;
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  @JoinColumn(name = "watering_history_details_id")
+  @OneToMany(mappedBy = "wateringHistoryPlantDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<WateringHistoryDetails> wateringHistoryDetails;
 }

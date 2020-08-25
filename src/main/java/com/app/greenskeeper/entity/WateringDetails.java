@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,7 @@ public class WateringDetails extends BaseEntity {
   @Basic
   @Column(name = "next_watering")
   private LocalDateTime nextWateringDay;
-  @OneToOne(mappedBy = "wateringDetails", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "plant_id", referencedColumnName = "id")
   private PlantDetails plantDetails;
 }

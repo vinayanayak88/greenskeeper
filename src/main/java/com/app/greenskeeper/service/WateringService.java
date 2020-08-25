@@ -11,7 +11,6 @@ import com.app.greenskeeper.repository.WateringRepository;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WateringService {
 
-  @NonNull
-  private WateringRepository wateringRepository;
   @NonNull
   private PlantRepository plantRepository;
 
@@ -40,20 +37,20 @@ public class WateringService {
 
   private Plant updateWateringInformation(PlantDetails plantDetails) {
     WateringHistoryDetails wateringHistoryDetails = WateringHistoryDetails.builder()
+                                                                          .wateringHistoryPlantDetails(
+                                                                              plantDetails)
                                                                           .wateringTime(plantDetails
                                                                                             .getWateringDetails()
                                                                                             .getLastWateredOn())
                                                                           .build();
+    plantDetails.getWateringHistoryDetails().add(wateringHistoryDetails);
+
     LocalDateTime lastWateredOn = LocalDateTime.now();
-    WateringDetails wateringDetails = WateringDetails.builder()
-                                                     .id(plantDetails.getWateringDetails().getId())
-                                                     .lastWateredOn(lastWateredOn)
-                                                     .nextWateringDay(
-                                                         calculateNextWateringDay(plantDetails,
-                                                                                  lastWateredOn))
-                                                     .build();
+    WateringDetails wateringDetails = plantDetails.getWateringDetails();
+    wateringDetails.setLastWateredOn(lastWateredOn);
+    wateringDetails.setNextWateringDay(calculateNextWateringDay(plantDetails,
+                                                                lastWateredOn));
     plantDetails.setWateringDetails(wateringDetails);
-    plantDetails.setWateringHistoryDetails(Collections.singletonList(wateringHistoryDetails));
 
     plantRepository.save(plantDetails);
     return buildPlantResponse(plantDetails);
@@ -62,6 +59,7 @@ public class WateringService {
   private Plant createWateringInformation(PlantDetails plantDetails) {
     LocalDateTime lastWateredOn = LocalDateTime.now();
     WateringDetails wateringDetails = WateringDetails.builder()
+                                                     .plantDetails(plantDetails)
                                                      .lastWateredOn(lastWateredOn)
                                                      .nextWateringDay(lastWateredOn.plusDays(
                                                          plantDetails.getWateringInterval()))
