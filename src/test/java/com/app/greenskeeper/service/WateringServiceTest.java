@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import com.app.greenskeeper.domain.LightRequirement;
-import com.app.greenskeeper.domain.Watering;
+import com.app.greenskeeper.domain.Plant;
 import com.app.greenskeeper.domain.WateringDuration;
 import com.app.greenskeeper.entity.CategoryDetails;
 import com.app.greenskeeper.entity.PlantDetails;
@@ -39,14 +39,6 @@ public class WateringServiceTest {
                                             .id(UUID.fromString(
                                                 "caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"))
                                             .name("Peace Lilly")
-                                            .categoryDetails(CategoryDetails.builder()
-                                                                            .name("Foliage Plant")
-                                                                            .duration(
-                                                                                WateringDuration.WEEKLY)
-                                                                            .wateringPeriod(2)
-                                                                            .lightRequirement(
-                                                                                LightRequirement.INDIRECTLIGHT)
-                                                                            .build())
                                             .build();
     given(plantRepository.findById(plantId)).willReturn(Optional.of(buildPlantDetails()));
     LocalDateTime lastWateredOn = LocalDateTime.now();
@@ -56,26 +48,16 @@ public class WateringServiceTest {
                                                      .lastWateredOn(lastWateredOn)
                                                      .nextWateringDay(lastWateredOn.plusDays(3))
                                                      .build();
-    Watering watering = wateringService.waterNow(plantId);
+    Plant plant = wateringService.waterNow(plantId);
 
-    assertThat(watering.getLastWateredOn()).isEqualTo(lastWateredOn);
+    assertThat(plant.getWateringInformation().getLastWateredOn()).isEqualTo(lastWateredOn);
 
   }
 
   private PlantDetails buildPlantDetails() {
     return PlantDetails.builder()
                        .name("Peace Lilly")
-                       .categoryDetails(buildCategoryDetails())
                        .build();
-  }
-
-  private CategoryDetails buildCategoryDetails() {
-    return CategoryDetails.builder()
-                          .name("Foliage Plant")
-                          .duration(WateringDuration.WEEKLY)
-                          .wateringPeriod(2)
-                          .lightRequirement(LightRequirement.INDIRECTLIGHT)
-                          .build();
   }
 
 

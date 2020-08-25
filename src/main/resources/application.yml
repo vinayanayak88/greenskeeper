@@ -9,6 +9,8 @@ spring:
     username: ${DB_USER:greenskeeper}
     password: ${DB_PASS:greenskeeper}
     driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
 
 graphql:
   spqr:

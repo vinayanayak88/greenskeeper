@@ -6,11 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.app.greenskeeper.domain.Category;
-import com.app.greenskeeper.domain.LightRequirement;
 import com.app.greenskeeper.domain.Plant;
-import com.app.greenskeeper.domain.WateringDuration;
-import com.app.greenskeeper.entity.CategoryDetails;
 import com.app.greenskeeper.entity.PlantDetails;
 import com.app.greenskeeper.exception.PlantAlreadyExistsException;
 import com.app.greenskeeper.exception.PlantNotFoundException;
@@ -37,20 +33,15 @@ public class PlantServiceTest {
   public void testAddPlant() {
     Plant plant = Plant.builder()
                        .name("Peace Lilly")
-                       .category(buildPlantCategory())
+                       .category("Trailing Plant")
+                       .wateringInterval("3")
                        .build();
     given(plantRepository.findByName(plant.getName())).willReturn(Optional.empty());
     plantService.addPlant(plant);
     PlantDetails plantDetails = PlantDetails.builder()
                                             .name("Peace Lilly")
-                                            .categoryDetails(CategoryDetails.builder()
-                                                                            .name("Foliage Plant")
-                                                                            .duration(
-                                                                                WateringDuration.WEEKLY)
-                                                                            .wateringPeriod(2)
-                                                                            .lightRequirement(
-                                                                                LightRequirement.INDIRECTLIGHT)
-                                                                            .build())
+                                            .category("Trailing Plant")
+                                            .wateringInterval(3)
                                             .build();
     verify(plantRepository, times(1)).save(plantDetails);
   }
@@ -72,12 +63,8 @@ public class PlantServiceTest {
 
     assertThat(plant.getId()).isNotNull();
     assertThat(plant.getName()).isEqualTo("Peace Lilly");
-    assertThat(plant.getCategory().getId()).isEqualTo(
-        UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"));
-    assertThat(plant.getCategory().getTitle()).isEqualTo("Foliage Plant");
-    assertThat(plant.getCategory().getDuration()).isEqualTo(WateringDuration.WEEKLY);
-    assertThat(plant.getCategory().getWateringPeriod()).isEqualTo("2");
-    assertThat(plant.getCategory().getLightRequirement()).isEqualTo(LightRequirement.INDIRECTLIGHT);
+    assertThat(plant.getCategory()).isEqualTo("Foliage Plant");
+    assertThat(plant.getWateringInterval()).isEqualTo("3");
   }
 
   @Test
@@ -92,31 +79,17 @@ public class PlantServiceTest {
 
   @Test
   public void testGetAllPlants() {
-    CategoryDetails trailingCategory = CategoryDetails.builder()
-                                                      .id(UUID.randomUUID())
-                                                      .name("Trailing Plant")
-                                                      .duration(WateringDuration.WEEKLY)
-                                                      .wateringPeriod(2)
-                                                      .lightRequirement(
-                                                          LightRequirement.INDIRECTLIGHT)
-                                                      .build();
 
     PlantDetails pothos = PlantDetails.builder()
                                       .name("Pothos")
-                                      .categoryDetails(trailingCategory)
+                                      .category("Trailing Plant")
+                                      .wateringInterval(2)
                                       .build();
-
-    CategoryDetails palmCategory = CategoryDetails.builder()
-                                                  .id(UUID.randomUUID())
-                                                  .name("Palm Plant")
-                                                  .duration(WateringDuration.MONTHLY)
-                                                  .wateringPeriod(4)
-                                                  .lightRequirement(LightRequirement.INDIRECTLIGHT)
-                                                  .build();
 
     PlantDetails arecaPalm = PlantDetails.builder()
                                          .name("Areca Palm")
-                                         .categoryDetails(palmCategory)
+                                         .category("Palm Plant")
+                                         .wateringInterval(5)
                                          .build();
 
     List<PlantDetails> plantEntities = Arrays.asList(pothos, arecaPalm);
@@ -126,54 +99,29 @@ public class PlantServiceTest {
     List<Plant> availablePlants = plantService.getAllPlants();
     assertThat(availablePlants).isNotEmpty();
     assertThat(availablePlants.get(0).getName()).isEqualTo("Pothos");
-    assertThat(availablePlants.get(0).getCategory().getTitle()).isEqualTo("Trailing Plant");
-    assertThat(availablePlants.get(0).getCategory().getDuration())
-        .isEqualTo(WateringDuration.WEEKLY);
-    assertThat(availablePlants.get(0).getCategory().getWateringPeriod()).isEqualTo("2");
-    assertThat(availablePlants.get(0).getCategory().getLightRequirement())
-        .isEqualTo(LightRequirement.INDIRECTLIGHT);
+    assertThat(availablePlants.get(0).getCategory()).isEqualTo("Trailing Plant");
+    assertThat(availablePlants.get(0).getWateringInterval()).isEqualTo("2");
 
     assertThat(availablePlants.get(1).getName()).isEqualTo("Areca Palm");
-    assertThat(availablePlants.get(1).getCategory().getTitle()).isEqualTo("Palm Plant");
-    assertThat(availablePlants.get(1).getCategory().getDuration())
-        .isEqualTo(WateringDuration.MONTHLY);
-    assertThat(availablePlants.get(1).getCategory().getWateringPeriod()).isEqualTo("4");
-    assertThat(availablePlants.get(1).getCategory().getLightRequirement())
-        .isEqualTo(LightRequirement.INDIRECTLIGHT);
+    assertThat(availablePlants.get(1).getCategory()).isEqualTo("Palm Plant");
+    assertThat(availablePlants.get(1).getWateringInterval()).isEqualTo("5");
   }
 
   private Plant buildPlant() {
     return Plant.builder()
                 .name("Peace Lilly")
-                .category(buildPlantCategory())
+                .category("Foliage Plant")
+                .wateringInterval("3")
                 .build();
-  }
-
-  private Category buildPlantCategory() {
-    return Category.builder()
-                   .id(UUID.fromString("baa46f55-3a2a-4d33-80e9-9b3dc1a88ad8"))
-                   .title("Foliage Plant")
-                   .duration(WateringDuration.WEEKLY)
-                   .wateringPeriod("2")
-                   .lightRequirement(LightRequirement.INDIRECTLIGHT)
-                   .build();
   }
 
   private PlantDetails buildPlantDetails() {
     return PlantDetails.builder()
                        .id(UUID.fromString("aaa46f55-3a2a-4d33-80e9-9b3dc1a88ad7"))
                        .name("Peace Lilly")
-                       .categoryDetails(buildCategoryDetails())
+                       .category("Foliage Plant")
+                       .wateringInterval(3)
                        .build();
-  }
-
-  private CategoryDetails buildCategoryDetails() {
-    return CategoryDetails.builder()
-                          .id(UUID.fromString("caa46f55-3a2a-4d33-80e9-9b3dc1a88ad9"))
-                          .name("Foliage Plant")
-                          .duration(WateringDuration.WEEKLY)
-                          .wateringPeriod(2)
-                          .lightRequirement(LightRequirement.INDIRECTLIGHT).build();
   }
 
 }

@@ -18,7 +18,8 @@ public class Plant {
 
   private UUID id;
   private String name;
-  private Category category;
-  private Watering wateringData;
+  private String category;
+  private String wateringInterval;
+  private WateringInformation wateringInformation;
 
 }

@@ -28,8 +28,6 @@ public class PlantService {
 
   @NonNull
   private PlantRepository plantRepository;
-  @NonNull
-  private CategoryRepository categoryRepository;
 
   @NonNull
   @GraphQLMutation(name = "addPlant")
@@ -37,10 +35,6 @@ public class PlantService {
     if (plantRepository.findByName(plant.getName()).isPresent()) {
       throw new PlantAlreadyExistsException(
           "Plant with the similar name already exists.Please choose another name");
-    }
-    Optional<CategoryDetails> categoryDetails = categoryRepository.findByName(plant.getCategory().getTitle());
-    if(categoryDetails.isEmpty()){
-      throw new CategoryNotFoundException("Could not find the plant category");
     }
     PlantDetails plantDetails = buildPlantDetails(plant);
     plantRepository.save(plantDetails);
@@ -65,35 +59,17 @@ public class PlantService {
   private PlantDetails buildPlantDetails(Plant plant) {
     return PlantDetails.builder()
                        .name(plant.getName())
-                       .categoryDetails(buildCategoryDetails(plant.getCategory()))
+                       .category(plant.getCategory())
+                       .wateringInterval(Integer.parseInt(plant.getWateringInterval()))
                        .build();
-  }
-
-  private CategoryDetails buildCategoryDetails(Category category) {
-    return CategoryDetails.builder()
-                          .name(category.getTitle())
-                          .duration(category.getDuration())
-                          .wateringPeriod(Integer.valueOf(category.getWateringPeriod()))
-                          .lightRequirement(category.getLightRequirement())
-                          .build();
   }
 
   private Plant buildPlantResponse(PlantDetails plantDetails) {
     return Plant.builder()
                 .id(plantDetails.getId())
                 .name(plantDetails.getName())
-                .category(buildCategoryResponse(plantDetails.getCategoryDetails()))
+                .category(plantDetails.getCategory())
+                .wateringInterval(String.valueOf(plantDetails.getWateringInterval()))
                 .build();
   }
-
-  private Category buildCategoryResponse(CategoryDetails categoryEntity) {
-    return Category.builder()
-                   .id(categoryEntity.getId())
-                   .title(categoryEntity.getName())
-                   .duration(categoryEntity.getDuration())
-                   .wateringPeriod(String.valueOf(categoryEntity.getWateringPeriod()))
-                   .lightRequirement(categoryEntity.getLightRequirement())
-                   .build();
-  }
-
 }

@@ -16,10 +16,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Watering {
+public class WateringInformation {
 
   private UUID id;
-  //private UUID plantId;
   private LocalDateTime lastWateredOn;
   private LocalDateTime nextWateringDay;
   private List<WateringHistory> wateringHistories;
