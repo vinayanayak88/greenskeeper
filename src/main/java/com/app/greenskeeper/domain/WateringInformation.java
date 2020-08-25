@@ -21,6 +21,4 @@ public class WateringInformation {
   private UUID id;
   private LocalDateTime lastWateredOn;
   private LocalDateTime nextWateringDay;
-  private List<WateringHistory> wateringHistories;
-
 }

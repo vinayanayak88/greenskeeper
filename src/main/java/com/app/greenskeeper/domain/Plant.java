@@ -1,6 +1,7 @@
 package com.app.greenskeeper.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,6 @@ public class Plant {
   private String category;
   private String wateringInterval;
   private WateringInformation wateringInformation;
+  private List<WateringHistory> wateringHistories;
 
 }

@@ -1,6 +1,8 @@
 package com.app.greenskeeper.service;
 
 import com.app.greenskeeper.domain.Plant;
+import com.app.greenskeeper.domain.WateringHistory;
+import com.app.greenskeeper.domain.WateringInformation;
 import com.app.greenskeeper.entity.PlantDetails;
 import com.app.greenskeeper.exception.PlantAlreadyExistsException;
 import com.app.greenskeeper.exception.PlantNotFoundException;
@@ -66,6 +68,23 @@ public class PlantService {
                 .name(plantDetails.getName())
                 .category(plantDetails.getCategory())
                 .wateringInterval(String.valueOf(plantDetails.getWateringInterval()))
+                .wateringInformation(plantDetails.getWateringDetails() != null ? buildWateringInformation(plantDetails) : null)
+                .wateringHistories(buildWateringHistories(plantDetails))
                 .build();
+  }
+
+  private WateringInformation buildWateringInformation(PlantDetails plantDetails) {
+    return WateringInformation.builder()
+                              .id(plantDetails.getWateringDetails().getId())
+                              .lastWateredOn(plantDetails.getWateringDetails().getLastWateredOn())
+                              .nextWateringDay(
+                                  plantDetails.getWateringDetails().getNextWateringDay())
+                              .build();
+  }
+
+  private List<WateringHistory> buildWateringHistories(PlantDetails plantDetails) {
+    return plantDetails.getWateringHistoryDetails().stream()
+                       .map(w -> new WateringHistory(w.getId(), w.getWateringTime()))
+                       .collect(Collectors.toList());
   }
 }
