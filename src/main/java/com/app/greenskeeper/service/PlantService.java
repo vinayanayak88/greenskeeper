@@ -51,8 +51,16 @@ public class PlantService {
   @GraphQLQuery(name = "getAllPlants")
   public List<Plant> getAllPlants() {
     List<PlantDetails> allPlants = plantRepository.findAll();
+    allPlants.sort((p1, p2) -> p1.getWateringDetails().getNextWateringDay().compareTo(p2.getWateringDetails().getNextWateringDay()));
     return allPlants.stream().map(this::buildPlantResponse).collect(Collectors.toList());
   }
+
+  @NonNull
+  @GraphQLQuery(name = "removePlant")
+  public void removePlant(@GraphQLArgument(name = "id") UUID id){
+    plantRepository.deleteById(id);
+  }
+
 
   private PlantDetails buildPlantDetails(Plant plant) {
     return PlantDetails.builder()
